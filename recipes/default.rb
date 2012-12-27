@@ -21,7 +21,7 @@ source_location = "#{temp}/vim73"
 source_archive = "vim-7.3.tar.bz2"
 
 execute "install-dependency" do
-  command "apt-get install -y python-dev libncurses5-dev ruby ruby-dev libperl-dev"
+  command "apt-get install -y python-dev libncurses5-dev ruby ruby-dev libperl-dev ctags"
   user "root"
 end
 
