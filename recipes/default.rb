@@ -16,20 +16,42 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+temp = "/tmp"
+source_location = "#{temp}/vim73"
+source_archive = "vim-7.3.tar.bz2"
 
-# There is no vim package on RHEL/CentOS derivatives
-# * vim-minimal gives you /bin/vi
-# * vim-enhanced gives you /usr/bin/vim
-vim_base_pkgs = value_for_platform(
-  ["ubuntu", "debian", "arch"] => { "default" => ["vim"] },
-  ["redhat", "centos", "fedora", "scientific"] => { "default" => ["vim-minimal","vim-enhanced"] },
-  "default" => ["vim"]
-)
-
-vim_base_pkgs.each do |vim_base_pkg|
-  package vim_base_pkg
+execute "install-dependency" do
+  command "apt-get install -y python-dev libncurses5-dev ruby ruby-dev libperl-dev"
+  user "root"
 end
 
-node[:vim][:extra_packages].each do |vimpkg|
-  package vimpkg
+execute "download-sources" do
+  cwd temp
+  command "wget ftp://ftp.vim.org/pub/vim/unix/#{source_archive}; \
+  tar -xf #{source_archive}"
 end
+
+execute "install-build-dep" do
+  command "apt-get install -y make"
+  user "root"
+end
+
+execute "compile-form-sources" do
+  cwd source_location
+  command "./configure --without-x --enable-perlinterp --enable-pythoninterp --enable-rubyinterp --enable-cscope  --with-features=huge --prefix=/home/vagrant; \
+  make; \
+  make install"
+end
+
+execute "cleanup-build-dep" do
+  command "apt-get remove -y make"
+  user "root"
+end
+
+execute "cleanup-temp-files" do
+  cwd temp
+  command "rm -r #{source_location}; \
+  rm #{source_archive}"
+  user "root"
+end
+
