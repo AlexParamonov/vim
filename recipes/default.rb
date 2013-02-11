@@ -54,17 +54,3 @@ execute "cleanup-temp-files" do
   rm #{source_archive}"
   user "root"
 end
-
-# TODO move to separate book
-execute "install-custom-settings" do
-  home_dir = "/home/vagrant"
-  cwd "/home/vagrant"
-  user "vagrant"
-
-  command "git clone git://github.com/AlexParamonov/config.git #{home_dir}/config; \
-  cd #{home_dir}/config; \
-  ln -s #{home_dir}/config/.vimrc #{home_dir}/; \
-  ln -s #{home_dir}/config/.vim #{home_dir}/; \
-  git clone git://github.com/gmarik/vundle.git #{home_dir}/.vim/bundle/vundle; \
-  vim -c BundleInstall! -c q -c q -u #{home_dir}/.vim/.vim-bundles.vim"
-end
