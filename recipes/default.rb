@@ -43,11 +43,6 @@ execute "compile-from-sources" do
   make install"
 end
 
-execute "cleanup-build-dep" do
-  command "apt-get remove -y make"
-  user "root"
-end
-
 execute "cleanup-temp-files" do
   cwd temp
   command "rm -r #{source_location}; \
